@@ -27,7 +27,7 @@ import (
 	"time"
 	"strings"
 
-	"github.com/openblockchain/obc-peer/openchain/chaincode/shim"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // SimpleChaincode example simple Chaincode implementation
@@ -39,7 +39,6 @@ var openTradesStr = "_opentrades"				//name for the key/value that will store al
 
 type Marble struct{
 	Name string `json:"name"`					//the fieldtags are needed to keep case from bouncing around
-	Mileage int `json:"mileage"`
 	Color string `json:"color"`
 	Size int `json:"size"`
 	User string `json:"user"`
@@ -74,7 +73,7 @@ func main() {
 // ============================================================================================================================
 // Init - reset all the things
 // ============================================================================================================================
-func (t *SimpleChaincode) init(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	var Aval int
 	var err error
 
@@ -112,14 +111,22 @@ func (t *SimpleChaincode) init(stub *shim.ChaincodeStub, args []string) ([]byte,
 }
 
 // ============================================================================================================================
-// Run - Our entry point for Invokcations
+// Run - Our entry point for Invocations - [LEGACY] obc-peer 4/25/2016
 // ============================================================================================================================
 func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Println("run is running " + function)
+	return t.Invoke(stub, function, args)
+}
+
+// ============================================================================================================================
+// Invoke - Our entry point for Invocations
+// ============================================================================================================================
+func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+	fmt.Println("invoke is running " + function)
 
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
-		return t.init(stub, args)
+		return t.Init(stub, "init", args)
 	} else if function == "delete" {										//deletes an entity from its state
 		res, err := t.Delete(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
@@ -141,7 +148,7 @@ func (t *SimpleChaincode) Run(stub *shim.ChaincodeStub, function string, args []
 	} else if function == "remove_trade" {									//cancel an open trade order
 		return t.remove_trade(stub, args)
 	}
-	fmt.Println("run did not find func: " + function)						//error
+	fmt.Println("invoke did not find func: " + function)					//error
 
 	return nil, errors.New("Received unknown function invocation")
 }
@@ -248,12 +255,13 @@ func (t *SimpleChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte
 func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var err error
 
-	//   0         1       2      3     4
-	// "asdf", "102345" "blue", "35", "bob"
-	if len(args) != 5 {
+	//   0       1       2     3
+	// "asdf", "blue", "35", "bob"
+	if len(args) != 4 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
+	//input sanitation
 	fmt.Println("- start init marble")
 	if len(args[0]) <= 0 {
 		return nil, errors.New("1st argument must be a non-empty string")
@@ -267,24 +275,30 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	if len(args[3]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
-	if len(args[4]) <= 0 {
-		return nil, errors.New("5th argument must be a non-empty string")
-	}
-
-	size, err := strconv.Atoi(args[3])
+	name := args[0]
+	color := strings.ToLower(args[1])
+	user := strings.ToLower(args[3])
+	size, err := strconv.Atoi(args[2])
 	if err != nil {
-		return nil, errors.New("4th argument must be a numeric string")
+		return nil, errors.New("3rd argument must be a numeric string")
 	}
-	mileage, err := strconv.Atoi(args[1])
+
+	//check if marble already exists
+	marbleAsBytes, err := stub.GetState(name)
 	if err != nil {
-		return nil, errors.New("2nd argument must be a numeric string")
+		return nil, errors.New("Failed to get marble name")
+	}
+	res := Marble{}
+	json.Unmarshal(marbleAsBytes, &res)
+	if res.Name == name{
+		fmt.Println("This marble arleady exists: " + name)
+		fmt.Println(res);
+		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 	}
 
-	color := strings.ToLower(args[2])
-	user := strings.ToLower(args[4])
-
-	str := `{"name": "` + args[0] + `", "mileage": ` + strconv.Itoa(mileage) + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
-	err = stub.PutState(args[0], []byte(str))								//store marble with id as key
+	//build the marble json string manually
+	str := `{"name": "` + name + `", "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
+	err = stub.PutState(name, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
 	}
@@ -298,7 +312,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	json.Unmarshal(marblesAsBytes, &marbleIndex)							//un stringify it aka JSON.parse()
 
 	//append
-	marbleIndex = append(marbleIndex, args[0])								//add marble name to index list
+	marbleIndex = append(marbleIndex, name)									//add marble name to index list
 	fmt.Println("! marble index: ", marbleIndex)
 	jsonAsBytes, _ := json.Marshal(marbleIndex)
 	err = stub.PutState(marbleIndexStr, jsonAsBytes)						//store name of marble

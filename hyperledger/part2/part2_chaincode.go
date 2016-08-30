@@ -279,6 +279,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	color := strings.ToLower(args[1])
 	user := strings.ToLower(args[3])
 	size, err := strconv.Atoi(args[2])
+
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")
 	}

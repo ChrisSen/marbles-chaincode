@@ -258,7 +258,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 
 	//   0       1       2     3
 	// "asdf", "blue", "35", "bob"
-	if len(args) != 4 {
+	if len(args) != 5 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
@@ -267,19 +267,19 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	if len(args[0]) <= 0 {
 		return nil, errors.New("1st argument must be a non-empty string")
 	}
-	if len(args[1]) <= 0 {
+	if len(args[2]) <= 0 {
 		return nil, errors.New("2nd argument must be a non-empty string")
 	}
-	if len(args[2]) <= 0 {
+	if len(args[3]) <= 0 {
 		return nil, errors.New("3rd argument must be a non-empty string")
 	}
-	if len(args[3]) <= 0 {
+	if len(args[4]) <= 0 {
 		return nil, errors.New("4th argument must be a non-empty string")
 	}
 	name := args[0]
-	color := strings.ToLower(args[1])
-	user := strings.ToLower(args[3])
-	size, err := strconv.Atoi(args[2])
+	color := strings.ToLower(args[2])
+	user := strings.ToLower(args[4])
+	size, err := strconv.Atoi(args[3])
 
 	if err != nil {
 		return nil, errors.New("3rd argument must be a numeric string")

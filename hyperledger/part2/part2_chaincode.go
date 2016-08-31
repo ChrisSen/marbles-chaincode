@@ -43,6 +43,12 @@ type Marble struct{
 	Color string `json:"color"`
 	Size int `json:"size"`
 	User string `json:"user"`
+	Usage []Use `json:"usage"`
+}
+
+type Use struct{
+	User string `json:"user"`
+	Distance int `json:"distance"`
 }
 
 type Description struct{

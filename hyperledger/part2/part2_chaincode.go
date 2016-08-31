@@ -43,6 +43,7 @@ type Marble struct{
 	Color string `json:"color"`
 	Size int `json:"size"`
 	User string `json:"user"`
+	Handover int `json:"handover"`
 	Usage []Use `json:"usage"`
 }
 

@@ -144,7 +144,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	} else if function == "init_marble" {									//create a new marble
 		return t.init_marble(stub, args)
 	} else if function == "set_mileage" {									//update mileage of marble
-		return t.set_mileage(stub, args)
+		res, err := t.set_mileage(stub, args)
+		cleanTrades(stub)													//lets make sure all open trades are still valid
+		return res, er
 	} else if function == "set_user" {										//change owner of a marble
 		res, err := t.set_user(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
@@ -384,8 +386,8 @@ func (t *SimpleChaincode) set_mileage (stub *shim.ChaincodeStub, args []string) 
 	if len(args) < 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
-
-	fmt.Println("- start set user")
+/*
+	fmt.Println("- start update mileage")
 	fmt.Println(args[0] + " - " + args[1])
 	marbleAsBytes, err := stub.GetState(args[0])
 	if err != nil {
@@ -400,8 +402,8 @@ func (t *SimpleChaincode) set_mileage (stub *shim.ChaincodeStub, args []string) 
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("- end set user")
+*/
+	fmt.Println("- end update mileage")
 	return nil, nil
 }
 

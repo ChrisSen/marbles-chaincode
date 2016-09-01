@@ -44,12 +44,7 @@ type Marble struct{
 	Size int `json:"size"`
 	User string `json:"user"`
 	Handover int `json:"handover"`
-	Usage []Use `json:"usage"`
-}
-
-type Use struct{
-	User string `json:"user"`
-	Distance int `json:"distance"`
+	Usage map[string]int `json:"usage"`
 }
 
 type Description struct{

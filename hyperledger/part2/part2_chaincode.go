@@ -143,6 +143,8 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 		return t.Write(stub, args)
 	} else if function == "init_marble" {									//create a new marble
 		return t.init_marble(stub, args)
+	} else if function == "set_mileage" {									//update mileage of marble
+		return t.set_mileage(stub, args)
 	} else if function == "set_user" {										//change owner of a marble
 		res, err := t.set_user(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
@@ -343,6 +345,38 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 // Set User Permission on Marble
 // ============================================================================================================================
 func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	var err error
+
+	//   0       1
+	// "name", "bob"
+	if len(args) < 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	}
+
+	fmt.Println("- start set user")
+	fmt.Println(args[0] + " - " + args[1])
+	marbleAsBytes, err := stub.GetState(args[0])
+	if err != nil {
+		return nil, errors.New("Failed to get thing")
+	}
+	res := Marble{}
+	json.Unmarshal(marbleAsBytes, &res)										//un stringify it aka JSON.parse()
+	res.User = args[1]														//change the user
+
+	jsonAsBytes, _ := json.Marshal(res)
+	err = stub.PutState(args[0], jsonAsBytes)								//rewrite the marble with id as key
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("- end set user")
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Update Mileage on Marble
+// ============================================================================================================================
+func (t *SimpleChaincode) set_mileage (stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var err error
 
 	//   0       1

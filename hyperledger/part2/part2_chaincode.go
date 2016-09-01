@@ -146,7 +146,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	} else if function == "set_mileage" {									//update mileage of marble
 		res, err := t.set_mileage(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
-		return res, er
+		return res, err
 	} else if function == "set_user" {										//change owner of a marble
 		res, err := t.set_user(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid

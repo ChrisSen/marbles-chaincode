@@ -313,12 +313,27 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 		return nil, errors.New("This marble arleady exists")				//all stop a marble by this name exists
 	}
 
+	marble := Marble{}
+	marble.Name = name
+	marble.Mileage = mile
+	marble.Color = color
+	marble.Size = size
+	marble.User = user
+
+	jsonAsBytes, _ := json.Marshal(marble)
+	err = stub.PutState(name, jsonAsBytes)								//rewrite the marble with id as key
+	if err != nil {
+		return nil, err
+	}
+/*
+
 	//build the marble json string manually
 	str := `{"name": "` + name + `", "mileage": ` + strconv.Itoa(mileage)  + `, "color": "` + color + `", "size": ` + strconv.Itoa(size) + `, "user": "` + user + `"}`
 	err = stub.PutState(name, []byte(str))									//store marble with id as key
 	if err != nil {
 		return nil, err
 	}
+*/
 
 	//get the marble index
 	marblesAsBytes, err := stub.GetState(marbleIndexStr)

@@ -389,14 +389,14 @@ func (t *SimpleChaincode) set_mileage(stub *shim.ChaincodeStub, args []string) (
 
 	fmt.Println("- start update mileage")
 	fmt.Println(args[0] + " - " + args[1])
-/*
+
 	marbleAsBytes, err := stub.GetState(args[0])
 	if err != nil {
 		return nil, errors.New("Failed to get thing")
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)										//un stringify it aka JSON.parse()
-	res.User = args[1]														//change the user
+/*	res.User = args[1]														//change the user
 
 	jsonAsBytes, _ := json.Marshal(res)
 	err = stub.PutState(args[0], jsonAsBytes)								//rewrite the marble with id as key

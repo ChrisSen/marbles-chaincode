@@ -378,7 +378,7 @@ func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]b
 // ============================================================================================================================
 // Update Mileage on Marble
 // ============================================================================================================================
-func (t *SimpleChaincode) set_mileage (stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) set_mileage(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var err error
 
 	//   0       1
@@ -386,9 +386,10 @@ func (t *SimpleChaincode) set_mileage (stub *shim.ChaincodeStub, args []string) 
 	if len(args) < 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
-/*
+
 	fmt.Println("- start update mileage")
 	fmt.Println(args[0] + " - " + args[1])
+/*
 	marbleAsBytes, err := stub.GetState(args[0])
 	if err != nil {
 		return nil, errors.New("Failed to get thing")

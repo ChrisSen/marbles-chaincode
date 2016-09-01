@@ -321,7 +321,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	marble.User = user
 	marble.Handover = mileage
 
-	marble.Usage := make(map[string]int)
+	marble.Usage = make(map[string]int)
 	marble.Usage[name] = 0
 
 	newMarbleAsBytes, _ := json.Marshal(marble)

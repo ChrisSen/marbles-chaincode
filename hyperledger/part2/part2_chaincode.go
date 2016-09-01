@@ -315,7 +315,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 
 	marble := Marble{}
 	marble.Name = name
-	marble.Mileage = mile
+	marble.Mileage = mileage
 	marble.Color = color
 	marble.Size = size
 	marble.User = user

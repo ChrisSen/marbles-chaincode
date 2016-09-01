@@ -377,6 +377,9 @@ func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]b
 	}
 	res := Marble{}
 	json.Unmarshal(marbleAsBytes, &res)										//un stringify it aka JSON.parse()
+
+	res.Usage[res.User] += res.Mileage - res.Handover
+	res.Handover = res.Mileage
 	res.User = args[1]														//change the user
 
 	jsonAsBytes, _ := json.Marshal(res)
@@ -418,6 +421,8 @@ func (t *SimpleChaincode) set_mileage(stub *shim.ChaincodeStub, args []string) (
 	}
 
 	res.Mileage = mileage														//change the mileage
+	res.Usage[res.User] += res.Mileage - res.Handover
+	res.Handover = res.Mileage
 
 	jsonAsBytes, _ := json.Marshal(res)
 	err = stub.PutState(args[0], jsonAsBytes)								//rewrite the marble with id as key

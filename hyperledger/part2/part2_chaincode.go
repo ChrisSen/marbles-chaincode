@@ -320,8 +320,8 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	marble.Size = size
 	marble.User = user
 
-	jsonAsBytes, _ := json.Marshal(marble)
-	err = stub.PutState(name, jsonAsBytes)								//rewrite the marble with id as key
+	marbleAsBytes, _ := json.Marshal(marble)
+	err = stub.PutState(name, marbleAsBytes)								//rewrite the marble with id as key
 	if err != nil {
 		return nil, err
 	}

@@ -379,7 +379,7 @@ func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]b
 // Update Mileage on Marble
 // ============================================================================================================================
 func (t *SimpleChaincode) set_mileage(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	var err error
+//	var err error
 
 	//   0       1
 	// "name", "bob"

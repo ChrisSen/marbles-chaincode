@@ -322,7 +322,7 @@ func (t *SimpleChaincode) init_marble(stub *shim.ChaincodeStub, args []string) (
 	marble.Handover = mileage
 
 	marble.Usage = make(map[string]int)
-	marble.Usage[name] = 0
+	marble.Usage[user] = 0
 
 	newMarbleAsBytes, _ := json.Marshal(marble)
 	err = stub.PutState(name, newMarbleAsBytes)								//rewrite the marble with id as key

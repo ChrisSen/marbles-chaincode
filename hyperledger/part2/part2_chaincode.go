@@ -183,45 +183,46 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var schemas = `
 	{
-	"API": {
-		"updateMileage": {
-			"description": "Set the current mileage of a marble.",
+		"API": {
+			"type": "object",
+			"description": "The API for marbles",
 			"properties": {
-				"args": {
-					"description": "args are JSON encoded strings",
-					"items": {
-						"description": "A set of fields that constitute the writable fields in an asset's state. AssetID is mandatory along with at least one writable field. In this contract pattern, a partial state is used as an event.",
-						"properties": {
-							"assetID": {
-								"description": "The ID of a managed asset. The resource focal point for a smart contract.",
-								"type": "string"
-							},
-							"mileage": {
-								"description": "current mileage of asset",
-								"type": "number"
-							}
+				"updateMileage": {
+					"type": "object",
+					"description": "Updates the mileage of a marble",
+					"properties": {
+						"method": "invoke",
+						"function": {
+							"type": "string",
+							"enum": [
+								"updateMarble"
+							],
+							"description": "updateMarble function"
 						},
-						"required": [
-							"assetID"
-						],
-						"type": "object"
-					},
-					"maxItems": 1,
-					"minItems": 1,
-					"type": "array"
-				},
-				"function": {
-					"description": "updateMileage function",
-					"enum": [
-						"updateMileage"
-					],
-					"type": "string"
+						"args": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"marble": {
+										"type": "string",
+										"description": "id of marble"
+									},
+									"mileage": {
+										"type": "number",
+										"description": "current mileage"
+									}
+								}
+							},
+							"minItems": 1,
+							"maxItems": 1,
+							"description": "args are JSON encoded strings"
+						}
+					}
 				}
-			},
-			"type": "object"
+			}
 		}
-	}
-}`
+	}`
 
 	return []byte(schemas), nil
 }

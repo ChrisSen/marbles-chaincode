@@ -183,41 +183,32 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var schemas = `
 	{
-	"API": {
-		"set_mileage": {
-			"description": "Set the current mileage of a marble.",
-			"properties": {
-				"args": {
-					"description": "arguments",
-					"items": {
-						"name": {
-							"description": "The name of the marble.",
-							"type": "string"
-						},
-						"mileage": {
-							"description": "The current mileage in km.",
-							"type": "number"
-						}
+		"API": {
+			"set_mileage": {
+				"description": "Set the current mileage of a marble.",
+				"properties": {
+					"args": {
+						"description": "arguments",
+						"items": { "type": "string" },
+						"maxItems": 2,
+						"minItems": 2,
+						"type": "array"
 					},
-					"maxItems": 2,
-					"minItems": 2,
-					"type": "array"
+					"function": {
+						"description": "set_mileage function",
+						"enum": [
+							"set_mileage"
+						],
+						"type": "string"
+					},
+					"required": [
+						"name", "mileage"
+					]
 				},
-				"function": {
-					"description": "set_mileage function",
-					"enum": [
-						"set_mileage"
-					],
-					"type": "string"
-				},
-				"required": [
-					"name", "mileage"
-				]
-			},
-			"type": "object"
+				"type": "object"
+			}
 		}
-	}
-}`
+	}`
 
 	return []byte(schemas), nil
 }

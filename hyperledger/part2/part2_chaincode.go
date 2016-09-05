@@ -183,32 +183,45 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var schemas = `
 	{
-		"API": {
-			"set_mileage": {
-				"description": "Set the current mileage of a marble.",
-				"properties": {
-					"args": {
-						"description": "arguments",
-						"items": { "type": "string" },
-						"maxItems": 2,
-						"minItems": 2,
-						"type": "array"
-					},
-					"function": {
-						"description": "set_mileage function",
-						"enum": [
-							"set_mileage"
+	"API": {
+		"set_mileage": {
+			"description": "Set the current mileage of a marble.",
+			"properties": {
+				"args": {
+					"description": "args are JSON encoded strings",
+					"items": {
+						"description": "A set of fields that constitute the writable fields in an asset's state. AssetID is mandatory along with at least one writable field. In this contract pattern, a partial state is used as an event.",
+						"properties": {
+							"assetID": {
+								"description": "The ID of a managed asset. The resource focal point for a smart contract.",
+								"type": "string"
+							},
+							"mileage": {
+								"description": "current mileage of asset",
+								"type": "number"
+							}
+						},
+						"required": [
+							"assetID"
 						],
-						"type": "string"
+						"type": "object"
 					},
-					"required": [
-						"name", "mileage"
-					]
+					"maxItems": 1,
+					"minItems": 1,
+					"type": "array"
 				},
-				"type": "object"
-			}
+				"function": {
+					"description": "set_mileage function",
+					"enum": [
+						"set_mileage"
+					],
+					"type": "string"
+				}
+			},
+			"type": "object"
 		}
-	}`
+	}
+}`
 
 	return []byte(schemas), nil
 }

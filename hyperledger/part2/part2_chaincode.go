@@ -128,7 +128,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	fmt.Println("invoke is running " + function)
 
 	// Handle different functions
-	if function == "init" {													//initialize the chaincode state, used as reset
+	if function == "init" {													//initialize the chain61bbe6debd8b22dff3bf8ffda79210cd8c075b773185fb5244224fdf9e28f504f1e9cc398904bae17a1d70a05d712532b34d38d08f0c4b9b1092da57bff3a572code state, used as reset
 		return t.Init(stub, "init", args)
 	} else if function == "delete" {										//deletes an entity from its state
 		res, err := t.Delete(stub, args)
@@ -138,8 +138,8 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 		return t.Write(stub, args)
 	} else if function == "init_marble" {									//create a new marble
 		return t.init_marble(stub, args)
-	} else if function == "set_mileage" {									//update mileage of marble
-		res, err := t.set_mileage(stub, args)
+	} else if function == "updateMileage" {									//update mileage of marble
+		res, err := t.mileage(stub, args)
 		cleanTrades(stub)													//lets make sure all open trades are still valid
 		return res, err
 	} else if function == "set_user" {										//change owner of a marble
@@ -184,7 +184,7 @@ func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []stri
 	var schemas = `
 	{
 	"API": {
-		"set_mileage": {
+		"updateMileage": {
 			"description": "Set the current mileage of a marble.",
 			"properties": {
 				"args": {
@@ -211,9 +211,9 @@ func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []stri
 					"type": "array"
 				},
 				"function": {
-					"description": "set_mileage function",
+					"description": "updateMileage function",
 					"enum": [
-						"set_mileage"
+						"updateMileage"
 					],
 					"type": "string"
 				}
@@ -446,7 +446,7 @@ func (t *SimpleChaincode) set_user(stub *shim.ChaincodeStub, args []string) ([]b
 // ============================================================================================================================
 // Update Mileage on Marble
 // ============================================================================================================================
-func (t *SimpleChaincode) set_mileage(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) updateMileage(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 //	var err error
 
 	//   0       1

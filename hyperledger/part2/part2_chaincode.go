@@ -169,10 +169,40 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	// Handle different functions
 	if function == "read" {													//read a variable
 		return t.read(stub, args)
+	} else if function =="readAssetSchemas" {
+		return t.readAssetSchemas(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)						//error
 
 	return nil, errors.New("Received unknown function query")
+}
+
+// ============================================================================================================================
+// Read Asset Schema for Watson IoT Platform mapping
+// ============================================================================================================================
+func (t *SimpleChaincode) readAssetSchemas(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	var schemas = `
+	{
+		"API": {
+			"set_mileage": {
+				"description": "Set the current mileage of a marble.",
+				"properties": {
+					"args": {
+						"name": {
+							"description": "The name of the marble.",
+							"type": "string"
+						},
+						"mileage": {
+							"description": "The current mileage in km.",
+							"type": "number"
+						}
+					}
+				}
+			}
+		}
+	}`
+
+	return []byte(schemas), nil
 }
 
 // ============================================================================================================================
